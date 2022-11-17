@@ -4,12 +4,12 @@ COMMANDS="debug help logtail show stop adduser fg kill quit run wait console for
 START="start restart zeoserver"
 CMD="bin/instance"
 
-bin/python /docker-initialize.py
+python2 /docker-initialize.py
 mkdir -p /data/{log,filestorage,blobstorage}
 if [ -e "custom.cfg" ]; then
 	if [ ! -e "bin/develop" ]; then
 		bin/buildout -c custom.cfg
-		bin/python /docker-initialize.py
+		python2 /docker-initialize.py
 	fi
 fi
 
