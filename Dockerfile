@@ -2,6 +2,7 @@ FROM imiobe/plone-base:4.3.20-ubuntu as builder
 
 COPY --chown=imio scripts /plone/scripts/
 COPY --chown=imio *.cfg requirements.txt /plone/
+COPY --chown=imio *.conf requirements.txt /plone/
 
 WORKDIR /plone
 
@@ -38,8 +39,6 @@ VOLUME /data/blobstorage
 VOLUME /data/filestorage
 WORKDIR /plone
 EXPOSE 8081
-HEALTHCHECK --interval=1m --timeout=5s --start-period=45s \
-  CMD nc -z -w5 127.0.0.1 8081 || exit 1
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]

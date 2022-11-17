@@ -7,8 +7,6 @@ services:
     volumes:
       - ./data/blobstorage:/data/blobstorage
       - ./data/filestorage:/data/filestorage
-    healthcheck:
-      test: ['CMD', 'nc', '-z', '-w5', '127.0.0.1', '8100']
     command: zeoserver fg
   instance:
     build:
@@ -16,6 +14,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./data/blobstorage:/data/blobstorage
+      - ./products:/plone/products # Temporary hack
     environment:
       - MEMCACHE_SERVER=172.17.0.1
       - MEMCACHE_DEFAULT_AGE=10800
@@ -25,22 +24,22 @@ services:
       - ZEO_HOST=zeo
       - ZEO_PORT=8100
     command: fg
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.instance.rule=Host(`portal.localhost`)"
-      - "traefik.http.routers.instance.entrypoints=web"
-      - "traefik.http.services.instance.loadbalancer.server.port=8081"
-      - "traefik.http.routers.instance.middlewares=add-plone"
-      - "traefik.http.middlewares.add-plone.addprefix.prefix=/VirtualHostBase/http/portal.localhost/conseil/VirtualHostRoot"
-  reverseproxy:
-    image: traefik:2.0 # The official Traefik docker image
-          #- "--log.level=DEBUG"
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--entryPoints.web.address=:80"
-    ports:
-      - "80:80"     # The HTTP port
-      - "8000:8080" # The Web UI (enabled by --api)
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+      #    labels:
+      #      - "traefik.enable=true"
+      #      - "traefik.http.routers.instance.rule=Host(`portal.localhost`)"
+      #      - "traefik.http.routers.instance.entrypoints=web"
+      #      - "traefik.http.services.instance.loadbalancer.server.port=8081"
+      #      - "traefik.http.routers.instance.middlewares=add-plone"
+      #      - "traefik.http.middlewares.add-plone.addprefix.prefix=/VirtualHostBase/http/portal.localhost/conseil/VirtualHostRoot"
+      #  reverseproxy:
+      #    image: traefik:2.0 # The official Traefik docker image
+      #          #- "--log.level=DEBUG"
+      #    command:
+      #      - "--api.insecure=true"
+      #      - "--providers.docker=true"
+      #      - "--entryPoints.web.address=:80"
+      #    ports:
+      #      - "80:80"     # The HTTP port
+      #      - "8000:8080" # The Web UI (enabled by --api)
+      #    volumes:
+      #      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
