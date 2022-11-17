@@ -2,7 +2,6 @@ FROM imiobe/plone-base:4.3.20-ubuntu as builder
 
 COPY --chown=imio scripts /plone/scripts/
 COPY --chown=imio *.cfg requirements.txt /plone/
-COPY --chown=imio templates /plone/templates/
 
 WORKDIR /plone
 
